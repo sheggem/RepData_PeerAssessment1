@@ -2,7 +2,8 @@
 
 
 ## Loading and preprocessing the data
-```{r cleandata, echo=TRUE}
+
+```r
 data <- read.csv("activity.csv")
 data$date <- as.Date(data$date, "%Y-%m-%d")
 cleandata <- data[which(data$steps != "NA"), ]
@@ -11,17 +12,35 @@ cleandata <- data[which(data$steps != "NA"), ]
 
 ## What is mean total number of steps taken per day?
 Here's the histogram of the total number of steps taken per day.
-```{r dailytotal, echo=TRUE}
+
+```r
 data_dailytotal <- aggregate(data[,c("steps"),drop=FALSE], list(date=data$date), sum, na.rm=TRUE)
 hist(data_dailytotal$steps, breaks=20, main="", xlab = "Number of steps", ylab = "Frequency")
+```
+
+![plot of chunk dailytotal](figure/dailytotal.png) 
+
+```r
 mean(data_dailytotal$steps)
+```
+
+```
+## [1] 9354
+```
+
+```r
 median(data_dailytotal$steps)
+```
+
+```
+## [1] 10395
 ```
 
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 library(plyr)
 average_by_interval <- ddply(cleandata, .(interval), summarise, steps=mean(steps))
 plot(average_by_interval$interval, average_by_interval$steps, type="l", 
@@ -29,30 +48,87 @@ plot(average_by_interval$interval, average_by_interval$steps, type="l",
      xlab="5-minute interval", 
      ylab="Average number of steps taken",
      main="Average daily activity pattern")
+```
 
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1.png) 
+
+```r
 # Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 average_by_interval[average_by_interval$steps==max(average_by_interval$steps),]
+```
+
+```
+##     interval steps
+## 104      835 206.2
+```
+
+```r
 colnames(average_by_interval)[2] <- "intervalAvg"
 ```
 
 ## Imputing missing values
-```{r}
+
+```r
 #Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 sum(is.na(data$steps))
+```
+
+```
+## [1] 2304
+```
+
+```r
 # Fill NA's with average for that 5-min interval
 merged <- arrange(join(data, average_by_interval), interval)
+```
+
+```
+## Joining by: interval
+```
+
+```r
 # Create a new dataset that is equal to the original dataset but with the missing data filled in.
 merged$steps[is.na(merged$steps)] <- merged$intervalAvg[is.na(merged$steps)]
 # Histogram
 new_total_by_day <- ddply(merged, .(date), summarise, steps=sum(steps))
 hist(new_total_by_day$steps, main="Number of Steps", 
      xlab="Total number of steps taken each day", col="light blue",)
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+
+```r
 # mean and median total number of steps taken per day
 mean(new_total_by_day$steps)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(new_total_by_day$steps)
+```
+
+```
+## [1] 10766
+```
+
+```r
 total_steps1 <- sum(clean_data$steps)
+```
+
+```
+## Error: object 'clean_data' not found
+```
+
+```r
 total_steps2 <- sum(merged$steps)
 total_diff <- total_steps2 -total_steps1 []
+```
+
+```
+## Error: object 'total_steps1' not found
 ```
 
 
@@ -62,7 +138,8 @@ total_diff <- total_steps2 -total_steps1 []
    "weekday" and "weekend" indicating whether a given date is a
    weekday or weekend day.
 
-```{r, cache=TRUE}
+
+```r
 daytype <- function(date) {
     if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday")) {
         "weekend"
@@ -77,7 +154,8 @@ data$daytype <- as.factor(sapply(data$date, daytype))
    of the 5-minute interval (x-axis) and the average number of steps
    taken, averaged across all weekday days or weekend days
    (y-axis).
-```{r}
+
+```r
 par(mfrow=c(2,1))
 for (thedaytypes in c("weekday","weekend")) {
     steps.type <- aggregate(steps ~ interval,
@@ -87,3 +165,9 @@ for (thedaytypes in c("weekday","weekend")) {
     plot(steps.type, type="l", main=thedaytypes)
 }
 ```
+
+```
+## Error: no rows to aggregate
+```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
