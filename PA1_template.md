@@ -115,20 +115,14 @@ median(new_total_by_day$steps)
 ```
 
 ```r
-total_steps1 <- sum(clean_data$steps)
-```
-
-```
-## Error: object 'clean_data' not found
-```
-
-```r
+total_steps1 <- sum(cleandata$steps)
 total_steps2 <- sum(merged$steps)
 total_diff <- total_steps2 -total_steps1 []
+total_diff
 ```
 
 ```
-## Error: object 'total_steps1' not found
+## [1] 86130
 ```
 
 
@@ -141,13 +135,13 @@ total_diff <- total_steps2 -total_steps1 []
 
 ```r
 daytype <- function(date) {
-    if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday")) {
+    if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday","lørdag","søndag")) {
         "weekend"
     } else {
         "weekday"
     }
 }
-data$daytype <- as.factor(sapply(data$date, daytype))
+cleandata$daytype <- as.factor(sapply(cleandata$date, daytype))
 ```
 
 2. Make a panel plot containing a time series plot (i.e. `type = "l"`)
@@ -159,15 +153,11 @@ data$daytype <- as.factor(sapply(data$date, daytype))
 par(mfrow=c(2,1))
 for (thedaytypes in c("weekday","weekend")) {
     steps.type <- aggregate(steps ~ interval,
-                            data=data,
-                            subset=data$daytype==thedaytypes,
+                            data=cleandata,
+                            subset=cleandata$daytype==thedaytypes,
                             FUN=mean)
     plot(steps.type, type="l", main=thedaytypes)
 }
-```
-
-```
-## Error: no rows to aggregate
 ```
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 

@@ -50,9 +50,10 @@ hist(new_total_by_day$steps, main="Number of Steps",
 # mean and median total number of steps taken per day
 mean(new_total_by_day$steps)
 median(new_total_by_day$steps)
-total_steps1 <- sum(clean_data$steps)
+total_steps1 <- sum(cleandata$steps)
 total_steps2 <- sum(merged$steps)
 total_diff <- total_steps2 -total_steps1 []
+total_diff
 ```
 
 
@@ -64,13 +65,13 @@ total_diff <- total_steps2 -total_steps1 []
 
 ```{r, cache=TRUE}
 daytype <- function(date) {
-    if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday")) {
+    if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday","lørdag","søndag")) {
         "weekend"
     } else {
         "weekday"
     }
 }
-data$daytype <- as.factor(sapply(data$date, daytype))
+cleandata$daytype <- as.factor(sapply(cleandata$date, daytype))
 ```
 
 2. Make a panel plot containing a time series plot (i.e. `type = "l"`)
@@ -81,8 +82,8 @@ data$daytype <- as.factor(sapply(data$date, daytype))
 par(mfrow=c(2,1))
 for (thedaytypes in c("weekday","weekend")) {
     steps.type <- aggregate(steps ~ interval,
-                            data=data,
-                            subset=data$daytype==thedaytypes,
+                            data=cleandata,
+                            subset=cleandata$daytype==thedaytypes,
                             FUN=mean)
     plot(steps.type, type="l", main=thedaytypes)
 }
